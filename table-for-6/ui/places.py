@@ -71,6 +71,38 @@ def _osm(q):
     return None
 
 
+def _photon(q):
+    r = requests.get("https://photon.komoot.io/api/", timeout=8, headers=UA,
+                     params=dict(q=q, limit=8, bbox=f'{BOX["west"]},{BOX["south"]},{BOX["east"]},{BOX["north"]}'))
+    r.raise_for_status()
+    for f in r.json().get("features", []):
+        pr = f.get("properties", {})
+        vt = OSM_TYPE.get(pr.get("osm_value")) if pr.get("osm_key") == "amenity" else None
+        if vt is None:
+            continue
+        lon, lat = f["geometry"]["coordinates"]
+        if not _in_box(lat, lon):
+            continue
+        street = " ".join(x for x in [pr.get("housenumber", ""), pr.get("street", "")] if x)
+        return dict(name=pr.get("name") or q, lat=lat, lon=lon, type=vt, cuisine=-1,
+                    addr=", ".join(x for x in [street, pr.get("city", "")] if x), source="OpenStreetMap")
+    return None
+
+
+def _catalog(q):
+    """Our own list of real venues, matched by name (works even if the map services are unreachable)."""
+    import difflib
+    import unicodedata
+    from t6.venues import REAL_VENUES
+    norm = lambda x: unicodedata.normalize("NFKD", x).encode("ascii", "ignore").decode().lower().strip()
+    names = {norm(r[0]): r for r in REAL_VENUES}
+    hit = difflib.get_close_matches(norm(q), list(names), n=1, cutoff=0.85)
+    if not hit:
+        return None
+    r = names[hit[0]]
+    return dict(name=r[0], lat=r[1], lon=r[2], type=r[3], cuisine=r[4], addr=r[6], source="OpenStreetMap")
+
+
 @st.cache_data(ttl=24 * 3600, show_spinner=False)
 def find_place(q):
     """Return a dict for the best matching restaurant/cafe/bar in the map area, or None."""
@@ -88,10 +120,17 @@ def find_place(q):
                 return hit
     except Exception:
         pass
-    try:
-        return _osm(q)
-    except Exception:
-        return None
+    hit = _catalog(q)
+    if hit:
+        return hit
+    for fn in (_photon, _osm):
+        try:
+            hit = fn(q)
+            if hit:
+                return hit
+        except Exception as e:  # service down or blocking this server: try the next one
+            print(f"place lookup via {fn.__name__} failed: {e!r}")
+    return None
 
 
 def maps_link(name, addr=""):
