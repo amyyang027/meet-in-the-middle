@@ -1,5 +1,5 @@
-\documentclass[11pt]{article}
-\usepackage[letterpaper,margin=0.9in]{geometry}
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.6in,top=0.55in,bottom=0.6in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{booktabs,tabularx,multirow}
 \usepackage{graphicx,subcaption}
@@ -13,7 +13,11 @@
 \titlespacing*{\section}{0pt}{10pt}{4pt}
 \titlespacing*{\subsection}{0pt}{7pt}{3pt}
 \setlist{itemsep=1pt,topsep=2pt}
-\setlength{\parskip}{3pt}
+\setlength{\parskip}{2pt}
+\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{4pt}
+\setlength{\abovedisplayshortskip}{2pt}\setlength{\belowdisplayshortskip}{2pt}
+\setlength{\textfloatsep}{8pt}\setlength{\floatsep}{6pt}\setlength{\intextsep}{6pt}
+\setlength{\abovecaptionskip}{3pt}
 \newtheorem{proposition}{Proposition}
 \newcommand{\I}{\mathcal{I}}
 \newcommand{\V}{\mathcal{V}}
@@ -180,6 +184,7 @@ by computing the Poisson-binomial distribution of attendance with a short dynami
 
 \input{results}
 
+\clearpage
 \input{appendix}
 
 \end{document}
