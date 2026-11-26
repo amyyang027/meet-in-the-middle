@@ -1,6 +1,6 @@
 """Optimization models for choosing where and when the group meets.
 
-Notation (see docs/report_draft.md for the full write-up)
+Notation (see docs/report.md for the full write-up)
   i in members, o in options (venue, [restaurant], time slot), s in scenarios
   C[i,o,s] : travel minutes of member i under option o in scenario s
   x_o      : 1 if option o is chosen, sum_o x_o = 1

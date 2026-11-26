@@ -42,7 +42,7 @@ python -m experiments.run_experiments       # tables -> experiments/results, fig
 | `meetup/optimize.py` | All formulations: min-sum, min-max, CVaR (Rockafellar–Uryasev), OWA, season IP |
 | `meetup/sample.py` | Offline demo data and synthetic instances |
 | `experiments/` | Experiments behind the report figures |
-| `docs/report_draft.md` | Report draft |
+| `docs/report.md` | Report draft |
 | `docs/video_outline.md` | Video plan |
 
 ## Fair-use notes
