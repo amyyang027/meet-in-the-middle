@@ -1,0 +1,66 @@
+\clearpage
+\appendix
+\section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
+
+\section{Notation and parameter values}
+\label{app:params}
+
+\begin{table}[h]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}l X l@{}}
+\toprule
+Symbol & Meaning & Value in experiments \\
+\midrule
+$\I$, $N$ & users & $N\in\{12,\dots,240\}$ \\
+$\V$ & venues (restaurant, cafe, bar) & $\lceil N/6\rceil$, at least 8; 50/25/25\% by type \\
+$\T$ & time slots & Fri 7pm, Sat 11am, Sat 7pm \\
+$R_{vt}$ & tables venue $v$ can host in slot $t$ & 1 or 2 when open, 0 when closed \\
+$\K$, $v(k)$, $t(k)$ & candidate tables and their venue and slot & $R_{vt}$ copies of each open $(v,t)$ \\
+$a_{it}$ & 1 if user $i$ can attend slot $t$ & each slot w.p.\ 0.6, at least one \\
+$p_{ivt}$ & user-to-table satisfaction, in $[0,10]$ & $w=(3.5,3.5,1.5,1.5)$ \\
+$d_{ivt}$, $\tau_{iv}$ & travel minutes and toll dollars & see Section~\ref{sec:setup}; toll \$8 westbound \\
+$\lambda_d$, $\lambda_\tau$ & value of a minute and of a dollar & $0.08$, $0.20$ \\
+$c_{ik}$ & net value of user $i$ at table $k$ & $p-\lambda_d d-\lambda_\tau\tau$ \\
+$q_{ij}$ & pairwise compatibility & $\beta=(3.0,1.5,0.8)$; range about $[-3.2,3.4]$ \\
+$L$, $U$ & table size limits & 4, 6 \\
+$M$ & penalty for an unseated user & 8 \\
+$\bar A$, $\kappa$ & allowed age spread and penalty per extra year & 12 years, 0.5 \\
+$\gamma$ & weight on the fairness floor $\theta$ & $0$ unless stated \\
+$\phi_i$ & probability that user $i$ shows up & Beta$(8.5,1.5)$, clipped to $[0.55,0.99]$, mean 0.85 \\
+$E$, $\alpha$ & expected-attendance floor and chance level & 4.25, 0.9 \\
+$\pi_i$, $\mu_{vt}$, $\sigma_i$ & master duals (partition, capacity, fairness) & from HiGHS \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Pricing heuristic}
+
+\begin{algorithm}[h]
+\caption{Heuristic pricing at $(v,t)$ with weights $w_i=(1+\sigma_i)c_{ivt}-\pi_i$ and $\hat q_{ij}=\tfrac12(2+\sigma_i+\sigma_j)q_{ij}$}
+\label{alg:pricing}
+\begin{algorithmic}[1]
+\State $P\gets\{i: a_{it}=1\}$; seeds $\gets$ the 6 users with the largest $w_i$, plus 3 random users
+\For{each seed $s$}
+  \State $S\gets\{s\}$; \textbf{while} $|S|<U$: add $\arg\max_{j\in P\setminus S}\ \bigl(w_j+\sum_{i\in S}\hat q_{ij}\bigr)$
+  \State keep the best feasible prefix of size $L,\dots,U$ (feasible: availability, and the no-show rule if on)
+  \Repeat \Comment{best-improvement local search}
+    \State evaluate every swap $(a\in S,\ b\notin S)$, every add, and every drop, using
+    \Statex \hspace{\algorithmicindent} $\Delta(a\to b)=w_b+\sum_{j\in S}\hat q_{bj}-\hat q_{ab}-w_a-\sum_{j\in S}\hat q_{aj}$, then the exact age penalty
+    \State move to the best feasible improving neighbor
+  \Until{no move improves}
+\EndFor
+\State \Return the best tables whose reduced cost $\bar C_g$ is positive
+\end{algorithmic}
+\end{algorithm}
+
+\noindent After column generation stops, two cheap steps produce the integer solution. First, we enrich the column pool with every drop-one subset of each generated table and every generated group moved to another open $(v,t)$, then solve the master IP over the pool. Second, a \emph{diving} heuristic repeatedly fixes the table with the largest LP value $\lambda_g$, removes its members from pricing, and re-runs column generation on what is left. We keep the better of the two.
+
+\section{Code}
+All code is in Python 3.13 with HiGHS 1.16 (through \texttt{highspy}, and \texttt{PuLP} 2.9 for Model A).
+\begin{itemize}
+\item \texttt{t6/data.py}: synthetic instance generator and all parameters $p$, $c$, $q$, $d$, $\tau$.
+\item \texttt{t6/solve.py}: random and greedy baselines, Model A, the restricted master, heuristic and exact pricing, the weak-duality bound, pool enrichment, and diving.
+\item \texttt{experiments/run.py}: experiments E1 to E5; \texttt{experiments/figures.py}: every figure in this report.
+\end{itemize}
+Every experiment uses fixed random seeds, so \texttt{python -m experiments.run e1} reproduces Table~\ref{tab:e1} exactly (up to solver time limits).
