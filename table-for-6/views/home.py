@@ -3,7 +3,7 @@ from ui.theme import show, img, hero, HERO_LOCAL
 from t6.data import HOODS
 
 # the hero photo carries its own oval logo, so the nav seal steps aside on this page
-st.markdown('<style>.st-key-topnav .seal{visibility:hidden} .hero .ph{top:5.4rem !important; background-position:center top !important;}</style>', unsafe_allow_html=True)
+st.markdown('<style>.st-key-topnav .seal{visibility:hidden} .hero .ph{top:5.4rem !important; background-position:center top !important;} @media (max-width:900px){ .hero .ph{top:2rem !important;} }</style>', unsafe_allow_html=True)
 
 hero(HERO_LOCAL, "San Francisco &nbsp;·&nbsp; East Bay &nbsp;·&nbsp; By invitation",
      "Six strangers.<br>One table.",

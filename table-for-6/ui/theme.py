@@ -360,7 +360,25 @@ table.score td .meta{ color:var(--mist); font-size:.8rem; }
   .band .ph{ background-attachment:scroll; }
   .lettergrid{ grid-template-columns:1fr !important; }
   .st-key-wizard{ padding:2rem 1.2rem 1.4rem; } .review{ grid-template-columns:1fr; } .rail .st span{ display:none; }
-  .tcard .body{ transform:none; } .tcard .ph{ filter:brightness(.25); }
+  .tcard{ height:auto; } .tcard .top{ position:relative; top:auto; left:auto; right:auto; padding:1.1rem 1.2rem 0; }
+  .tcard .body{ transform:none; position:relative; left:auto; right:auto; bottom:auto; padding:2.4rem 1.2rem 1.2rem; }
+  .tcard .ph{ filter:brightness(.25); }
+  .hero .corner{ display:none; } .hero .kick{ letter-spacing:.28em; font-size:.62rem; }
+  .sec{ padding:4.5rem 0 2.5rem; } .sec.tight{ padding:3rem 0 1.6rem; }
+  .act{ height:360px; } .venue{ height:300px; } .band{ height:56vh; min-height:360px; }
+  .stat b{ font-size:3rem; } .stat{ border-right:0; border-bottom:1px solid var(--line); padding:1.6rem .4rem 1rem; }
+  .marquee span{ font-size:1.5rem; padding:0 1rem; }
+  .spot{ min-height:380px; cursor:auto; }
+  /* nav: one scrollable row of links, seal hidden */
+  .st-key-topnav{ padding:.55rem .6rem .45rem !important; }
+  .st-key-topnav [data-testid="stHorizontalBlock"]{ overflow-x:auto; gap:1.1rem !important; justify-content:space-between; scrollbar-width:none; }
+  .st-key-topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar{ display:none; }
+  .st-key-topnav [data-testid="stColumn"]{ flex:0 0 auto !important; width:auto !important; min-width:0 !important; }
+  .st-key-topnav [data-testid="stColumn"]:nth-child(3){ display:none !important; }
+  .st-key-topnav [data-testid="stPageLink"] p, .st-key-topnav [data-testid="stPageLink-NavLink"] span{ letter-spacing:.14em !important; font-size:.6rem !important; }
+  .qhead h2{ font-size:2rem !important; }
+  .st-key-w_hood [data-testid="stButtonGroup"] button, .st-key-w_i [data-testid="stButtonGroup"] button{ padding:.55rem .9rem !important; }
+  .st-key-w_hood [data-testid="stButtonGroup"] button p, .st-key-w_i [data-testid="stButtonGroup"] button p{ font-size:1.1rem !important; }
 }
 </style>
 """
@@ -378,6 +396,29 @@ SPOT_JS = """
   }
   function scan(){ document.querySelectorAll('.spot').forEach(wire); }
   scan(); new MutationObserver(scan).observe(document.body, {childList:true, subtree:true});
+  // Home-screen app: give the hosting page (same origin) an icon, a name and a dark status bar.
+  try {
+    var top = window.parent && window.parent.document ? window.parent.document : document;
+    if (!top.getElementById('t6-pwa')) {
+      var base = new URL('app/static/', window.location.href).href;
+      var add = function(tag, attrs){ var e = top.createElement(tag); for (var k in attrs) e.setAttribute(k, attrs[k]); top.head.appendChild(e); return e; };
+      add('meta', {id:'t6-pwa', name:'apple-mobile-web-app-title', content:'Table for 6'});
+      add('meta', {name:'apple-mobile-web-app-capable', content:'yes'});
+      add('meta', {name:'mobile-web-app-capable', content:'yes'});
+      add('meta', {name:'apple-mobile-web-app-status-bar-style', content:'black-translucent'});
+      add('meta', {name:'theme-color', content:'#0A0D0C'});
+      top.querySelectorAll('link[rel="apple-touch-icon"]').forEach(function(l){ l.remove(); });
+      add('link', {rel:'apple-touch-icon', sizes:'180x180', href: base + 'icon-180.png'});
+      add('link', {rel:'icon', type:'image/png', sizes:'192x192', href: base + 'icon-192.png'});
+      var manifest = {name:'Table for 6', short_name:'Table for 6', start_url: top.location.origin + '/', display:'standalone',
+        background_color:'#0A0D0C', theme_color:'#0A0D0C',
+        icons:[{src: base + 'icon-192.png', sizes:'192x192', type:'image/png'}, {src: base + 'icon-512.png', sizes:'512x512', type:'image/png'}]};
+      var blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+      top.querySelectorAll('link[rel="manifest"]').forEach(function(l){ l.remove(); });
+      add('link', {rel:'manifest', href: URL.createObjectURL(blob)});
+      top.title = 'Table for 6';
+    }
+  } catch (e) { /* hosting page not reachable: nothing to do */ }
 })();
 </script>
 """
