@@ -36,13 +36,13 @@ with st.sidebar:
     n_cand = st.slider("Studios to consider", 5, 30, 15)
     food = st.toggle("Also pick a place to eat after practice")
     cuisine = st.selectbox("Cuisine", geo.CUISINES, disabled=not food)
-    late = st.number_input("A round trip is 'too long' after (minutes)", 20, 300, 90, 5)
+    late = st.number_input("A round trip is 'too long' after (minutes)", 20, 300, 120, 5)
 
 st.subheader("1. Who's coming?")
 st.write("A city or neighborhood is enough (for example *Berkeley* or *SF Mission*). "
          "You can also type a full address or `lat, lon`. Tick **Can host** if practice can be at "
          "your place.")
-default_df = pd.DataFrame([{"Name": n, "Location": loc.title(), "Can host": h}
+default_df = pd.DataFrame([{"Name": n, "Location": loc.title().replace("Sf ", "SF "), "Can host": h}
                            for n, loc, h in SAMPLE_MEMBERS])
 members_df = st.data_editor(default_df, num_rows="dynamic", width="stretch",
                             key="members")
@@ -191,11 +191,11 @@ def describe(o: int) -> dict:
 best = results[focus]
 st.subheader("2. Our pick")
 pick = describe(best["option"])
-cols = st.columns(4)
-cols[0].metric("Practice at", pick["Where"])
-cols[1].metric("When", pick["When"])
-cols[2].metric("Longest average trip", f"{best['avg longest trip (min)']:.0f} min")
-cols[3].metric(f"Chance someone takes > {late} min",
+st.markdown(f"### 📍 {pick['Where']}  ·  🕒 {pick['When']}")
+cols = st.columns(3)
+cols[0].metric("Longest average round trip", f"{best['avg longest trip (min)']:.0f} min")
+cols[1].metric("Bad-day worst trip (CVaR)", f"{best['bad-day worst trip, CVaR (min)']:.0f} min")
+cols[2].metric(f"Chance someone takes > {late} min",
                f"{(inst.C[:, best['option'], :].max(0) > late).mean():.0%}")
 if "Eat at" in pick:
     st.write(f"🍜 After practice: **{pick['Eat at']}**")
@@ -235,15 +235,18 @@ with right:
 st.subheader("3. How the objectives compare")
 st.write("Each row picks the spot that is best for one definition of *best*. "
          "The trade-off between them is the point: lowest total time is not always fair.")
+SHORT = {"total": "Min total (class)", "longest": "Min longest (class)",
+         "robust": "Robust CVaR (new)", "fair": "Fair OWA (new)"}
 rows = []
 for k, r in results.items():
-    rows.append({"Objective": OBJECTIVES[k], **describe(r["option"]),
-                 "Avg total (min)": round(r["avg total (min)"]),
-                 "Avg longest trip": round(r["avg longest trip (min)"]),
-                 "Bad-day worst trip (CVaR)": round(r["bad-day worst trip, CVaR (min)"]),
-                 f"P(someone > {late} min)": f"{(inst.C[:, r['option'], :].max(0) > late).mean():.0%}"})
+    rows.append({"Objective": SHORT[k], **describe(r["option"]),
+                 "Avg total": round(r["avg total (min)"]),
+                 "Avg longest": round(r["avg longest trip (min)"]),
+                 "Bad-day worst": round(r["bad-day worst trip, CVaR (min)"]),
+                 f"P(> {late} min)": f"{(inst.C[:, r['option'], :].max(0) > late).mean():.0%}"})
 st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
-st.caption(f"Drive times: {res['source']}. Traffic is simulated over {inst.C.shape[2]} days "
+st.caption("All times are round-trip minutes. *Bad-day worst* is the CVaR of the worst member's trip. "
+           f"Drive times: {res['source']}. Traffic is simulated over {inst.C.shape[2]} days "
            "from typical Bay Area congestion by time slot, plus random incidents.")
 
 st.subheader("4. Plan a whole season (rotate spots fairly)")
