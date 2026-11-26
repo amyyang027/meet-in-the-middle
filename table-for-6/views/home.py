@@ -3,13 +3,13 @@ from ui.theme import show, img, hero, HERO_LOCAL
 from t6.data import HOODS
 
 # the hero photo carries its own oval logo, so the nav seal steps aside on this page
-st.markdown('<style>.st-key-topnav .seal{visibility:hidden}</style>', unsafe_allow_html=True)
+st.markdown('<style>.st-key-topnav .seal{visibility:hidden} .hero .ph{top:5.4rem !important; background-position:center top !important;}</style>', unsafe_allow_html=True)
 
 hero(HERO_LOCAL, "San Francisco &nbsp;·&nbsp; East Bay &nbsp;·&nbsp; By invitation",
      "Six strangers.<br>One table.",
      "Tell us a little. We find the five people you'd get along with, the room you'd all love, "
      "and an hour that doesn't send anyone across the Bay Bridge at rush hour.",
-     corner="Scroll for the evening", pos="center 75%")
+     corner="Scroll for the evening", pos="center top")
 
 show("""<div class="sec"><div class="reveal center"><div class="eyebrow">The house rules</div>
 <p class="statement">We don't do small talk with whoever's nearby. We do <em>the right five strangers</em>,
