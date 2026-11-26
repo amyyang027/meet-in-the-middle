@@ -1,0 +1,6 @@
+,value
+share_of_groups_where_robust_differs_from_minmax_%,33.33
+cvar_saved_min (when different),1.43
+p95_saved_min (when different),1.01
+typical_avg_longest_cost_min (when different),6.15
+share_of_differing_groups_where_robust_better_out_of_sample_%,65.0

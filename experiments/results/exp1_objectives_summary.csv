@@ -1,0 +1,5 @@
+objective,avg_total,avg_longest,cvar_worst,p95_worst,p_late
+total,0.0,20.27,16.65,16.78,40.42
+longest,11.51,0.07,0.86,0.83,22.43
+robust,10.01,2.6,0.46,0.54,22.9
+fair,3.2,9.17,6.83,6.85,29.07

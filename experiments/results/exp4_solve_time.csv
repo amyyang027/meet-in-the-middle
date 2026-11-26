@@ -1,0 +1,13 @@
+options,scenarios,objective,enum_ms,milp_ms,same_value
+48,100,total,0.29,4.16,True
+48,100,longest,0.1,10.89,True
+48,100,robust,0.16,816.38,True
+48,100,fair,0.12,14.47,True
+88,200,total,0.39,4.45,True
+88,200,longest,0.27,9.37,True
+88,200,robust,0.23,5726.55,True
+88,200,fair,0.28,18.61,True
+168,300,total,0.96,6.82,True
+168,300,longest,0.71,13.63,True
+168,300,robust,0.67,10188.43,True
+168,300,fair,0.71,27.09,True
