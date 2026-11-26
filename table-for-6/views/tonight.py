@@ -1,6 +1,7 @@
 import streamlit as st
 from ui.theme import show, img, hero, H, VENUE_PHOTO
 from ui.engine import solve_b, tables_of, dark_map, profile_key, TONIGHT_N
+from ui.places import maps_link
 from t6.data import SLOTS
 
 hero(img("bridge_night", 2200), "Tonight's seating", "Every table, <br>one city.",
@@ -51,4 +52,5 @@ for j, k in enumerate(shown):
 <div class="chips">{shared}</div>
 <ul>{guests}</ul>
 <div class="kind" style="margin-top:.6rem">Avg trip {d["avg_trip"]:.0f} min · {100 * d["show_prob"]:.0f}% chance 4+ show</div>
+<a class="maplink" href="{maps_link(d["venue"].split(",")[0], d["addr"])}" target="_blank">{H(d["addr"] or "Find it")} ↗</a>
 </div></div>""")

@@ -76,6 +76,8 @@ class Instance:
     sat: np.ndarray = None   # (N,V,3) p_{ivt}
     c: np.ndarray = None     # (N,V,3) c_{ivt} (= -inf where infeasible)
     q: np.ndarray = None     # (N,N)
+    v_addr: list = None      # street addresses (real venues only)
+    bonus: dict = None       # {(i, v): extra satisfaction}, e.g. a guest's own favorite spot
 
 
 REST_NAMES = {0: "Casa Nopal", 1: "Jade Lantern", 2: "Osteria Fico", 3: "Kumo", 4: "Saffron Room",
@@ -107,7 +109,7 @@ def haversine(a, b):
     return 2 * 6371 * np.arcsin(np.sqrt(h))
 
 
-def generate(N, seed=0, V=None, params=None):
+def generate(N, seed=0, V=None, params=None, real=False):
     rng = np.random.default_rng(seed)
     V = V or max(8, int(np.ceil(N / 6)))
     hw = np.array([h[4] for h in HOODS]); hw /= hw.sum()
@@ -133,22 +135,66 @@ def generate(N, seed=0, V=None, params=None):
     slot_pref = rng.random((N, 3))
     show = np.clip(rng.beta(8.5, 1.5, N), 0.55, 0.99)
 
-    vh = rng.choice(len(HOODS), V, p=vw)
-    v_loc = centers[vh] + rng.normal(0, 0.005, (V, 2))
+    v_addr = None
+    if real:
+        vh, v_loc, v_type, v_cuis, v_price, v_name, v_addr = pick_real_venues(V, rng, vw)
+    else:
+        vh = rng.choice(len(HOODS), V, p=vw)
+        v_loc = centers[vh] + rng.normal(0, 0.005, (V, 2))
+        v_type = rng.choice(3, V, p=[0.5, 0.25, 0.25])
+        v_cuis = np.where(v_type == 0, rng.integers(0, 8, V), -1)
+        v_price = rng.integers(1, 4, V).astype(float)
+        v_name = venue_names(vh, v_type, v_cuis)
     v_side = np.array([HOODS[h][3] for h in vh])
-    v_type = rng.choice(3, V, p=[0.5, 0.25, 0.25])
-    v_cuis = np.where(v_type == 0, rng.integers(0, 8, V), -1)
-    v_price = rng.integers(1, 4, V).astype(float)
     R = np.zeros((V, 3), dtype=int)
     for v in range(V):
         for t in OPEN[TYPES[v_type[v]]]:
             R[v, t] = rng.integers(1, 3)
-    v_name = venue_names(vh, v_type, v_cuis)
     inst = Instance(N, V, home, side, car, age, gender, same_pref, interests, pref_type, pref_cuis,
                     budget, avail, slot_pref, show, v_loc, v_side, v_type, v_cuis, v_price, v_name, R,
-                    params or Params())
+                    params or Params(), v_addr=v_addr)
     derive(inst)
     return inst
+
+
+def pick_real_venues(V, rng, vw):
+    """Sample V real venues (OpenStreetMap) by neighborhood weight, about half restaurants."""
+    from .venues import REAL_VENUES
+    rows = list(REAL_VENUES)
+    want = rng.choice(3, V, p=[0.5, 0.25, 0.25])
+    chosen = []
+    for typ in want:
+        pool = [r for r in rows if r[3] == typ and r not in chosen] or [r for r in rows if r not in chosen]
+        w = np.array([vw[r[5]] for r in pool]); w /= w.sum()
+        chosen.append(pool[rng.choice(len(pool), p=w)])
+    vh = np.array([r[5] for r in chosen])
+    v_loc = np.array([[r[1], r[2]] for r in chosen])
+    v_type = np.array([r[3] for r in chosen])
+    v_cuis = np.array([r[4] for r in chosen])
+    # OpenStreetMap rarely records price, so the level is a rough estimate by kind of place
+    v_price = np.array([1.0 if r[3] == 1 or r[4] in (0, 7) else 2.0 for r in chosen])
+    v_name = [f"{r[0]}, {HOODS[r[5]][0]}" for r in chosen]
+    v_addr = [r[6] for r in chosen]
+    return vh, v_loc, v_type, v_cuis, v_price, v_name, v_addr
+
+
+def add_venue(inst, name, lat, lon, vtype, cuisine=-1, addr="", price=2.0, slots=None):
+    """Append one venue (e.g. a guest's favorite spot found on a map search). Returns its index."""
+    side = 1 if lon > -122.33 else 0
+    inst.v_loc = np.vstack([inst.v_loc, [[lat, lon]]])
+    inst.v_side = np.append(inst.v_side, side)
+    inst.v_type = np.append(inst.v_type, int(vtype))
+    inst.v_cuis = np.append(inst.v_cuis, int(cuisine))
+    inst.v_price = np.append(inst.v_price, float(price))
+    inst.v_name = list(inst.v_name) + [name]
+    inst.v_addr = (list(inst.v_addr) if inst.v_addr else [""] * inst.V) + [addr]
+    row = np.zeros((1, 3), dtype=int)
+    for t in (slots if slots is not None else OPEN[TYPES[int(vtype)]]):
+        row[0, t] = 2
+    inst.R = np.vstack([inst.R, row])
+    inst.V += 1
+    derive(inst)
+    return inst.V - 1
 
 
 def derive(inst):
@@ -173,6 +219,9 @@ def derive(inst):
     m_price = 1 - np.abs(inst.budget[:, None] - inst.v_price[None, :]) / 2
     w = p.w
     inst.sat = (w[0] * m_type + w[1] * m_cuis + w[2] * m_price)[:, :, None] + w[3] * inst.slot_pref[:, None, :]
+    for (i, v), b in (inst.bonus or {}).items():
+        if v < V:
+            inst.sat[i, v, :] += b
     c = inst.sat - p.lam_d * inst.d - p.lam_tau * inst.tau[:, :, None]
     ok = inst.avail[:, None, :] & (inst.R[None, :, :] > 0)
     inst.c = np.where(ok, c, -np.inf)

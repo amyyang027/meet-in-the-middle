@@ -1,7 +1,7 @@
 """Glue between the solvers and the website: build an instance, run every method, summarize."""
 import time
 import numpy as np
-from .data import generate, set_user, Params, HOODS, SLOTS, TYPES, CUISINES, TAG_NAMES, GENDERS
+from .data import generate, set_user, add_venue, derive, Params, HOODS, SLOTS, TYPES, CUISINES, TAG_NAMES, GENDERS
 from .solve import (solve_random, solve_greedy, solve_model_a, solve_model_b, metrics, user_values,
                     table_value, age_penalty, prob_at_least)
 
@@ -9,11 +9,22 @@ METHODS = ["Random", "Greedy", "Model A", "Model B"]
 MODEL_A_MAX_N = 24
 
 
-def build(N, seed, lam_d, gamma, show_mode, profile=None):
+FAVORITE_BONUS = 3.0   # extra satisfaction points for a guest's own favorite spot
+
+
+def build(N, seed, lam_d, gamma, show_mode, profile=None, real=True):
+    """Website instance: real venues; profile may carry 'spot' = (name, lat, lon, type, cuisine, address)."""
     p = Params(lam_d=lam_d, gamma=gamma, show_mode=show_mode)
-    inst = generate(N, seed, params=p)
+    inst = generate(N, seed, params=p, real=real)
     if profile is not None:
+        profile = dict(profile)
+        spot = profile.pop("spot", None)
         set_user(inst, 0, profile)
+        if spot:
+            name, lat, lon, vtype, cuis, addr = spot
+            v = add_venue(inst, name, lat, lon, vtype, cuis, addr)
+            inst.bonus = {(0, v): FAVORITE_BONUS}
+            derive(inst)
     return inst
 
 
@@ -77,6 +88,7 @@ def describe_table(inst, S, v, t):
     pair = inst.q[np.ix_(S, S)]
     n = len(S)
     return dict(
+        addr=(inst.v_addr[v] if inst.v_addr else ""), v=int(v),
         venue=inst.v_name[v], venue_type=vt, cuisine=cuisine, price="$" * int(inst.v_price[v]),
         slot=SLOTS[t], size=n, guests=guests, shared=shared,
         age_range=(int(ages.min()), int(ages.max())), genders=genders,
