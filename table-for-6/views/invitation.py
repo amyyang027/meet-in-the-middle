@@ -231,7 +231,7 @@ if prof:
 </div>
 <div>{round_table(d)}</div>
 </div>
-<div class="eyebrow" style="margin:2.2rem 0 .8rem">Your five strangers</div><div class="guests">{guests}</div>
+<div class="eyebrow" style="margin:2.2rem 0 .8rem">Your {["", "one stranger", "two strangers", "three strangers", "four strangers", "five strangers"][len(others)]}</div><div class="guests">{guests}</div>
 </div>""")
         vp = img(VENUE_PHOTO[d["venue_type"]], 2000)
         show(f"""<div class="fullbleed band" style="height:60vh;margin-top:5rem"><div class="ph" style="background-image:url('{vp}')"></div>
