@@ -9,6 +9,7 @@ PHOTOS = {
     "toast_white": "photo-1527529482837-4698179dc6ce",
     "laughing": "photo-1681641092941-b1acee507ee0",
     "glasses_up": "photo-1558346489-19413928158b",
+    "envelope": "photo-1774891937502-1e81281854eb",
     "bar_glow": "photo-1770334597610-8335702e8ab1",
     "dark_dining": "photo-1709548145082-04d0cde481d4",
     "dark_dining2": "photo-1680209668065-26985bc92268",
@@ -106,6 +107,12 @@ a{ color:var(--gold); }
 .seal .ring{ transform-origin:50% 50%; animation:spin 40s linear infinite; }
 .seal:hover .ring{ animation-duration:6s; }
 .navlinks{ display:flex; gap:2.2rem; }
+.brand{ display:flex; justify-content:center; margin-bottom:1.6rem; }
+.brand svg{ width:270px; height:auto; overflow:visible; filter:drop-shadow(0 2px 14px rgba(0,0,0,.55)); }
+.brand ellipse{ stroke-dasharray:640; stroke-dashoffset:640; animation:ovaldraw 2.4s .3s cubic-bezier(.6,.1,.2,1) forwards; }
+.brand text{ opacity:0; animation:brandin 1.4s 1.4s ease forwards; }
+@keyframes ovaldraw{ to{ stroke-dashoffset:0; } }
+@keyframes brandin{ from{ opacity:0; letter-spacing:.6em; } to{ opacity:1; letter-spacing:.32em; } }
 
 /* ---------- hero ---------- */
 .fullbleed{ width:100vw; position:relative; left:50%; margin-left:-50vw; }
@@ -369,12 +376,14 @@ table.score td .meta{ color:var(--mist); font-size:.8rem; }
   .stat b{ font-size:3rem; } .stat{ border-right:0; border-bottom:1px solid var(--line); padding:1.6rem .4rem 1rem; }
   .marquee span{ font-size:1.5rem; padding:0 1rem; }
   .spot{ min-height:380px; cursor:auto; }
-  /* nav: one scrollable row of links, seal hidden */
+  /* nav: one scrollable row of links, small seal first */
   .st-key-topnav{ padding:.55rem .6rem .45rem !important; }
   .st-key-topnav [data-testid="stHorizontalBlock"]{ overflow-x:auto; gap:1.1rem !important; justify-content:space-between; scrollbar-width:none; }
   .st-key-topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar{ display:none; }
   .st-key-topnav [data-testid="stColumn"]{ flex:0 0 auto !important; width:auto !important; min-width:0 !important; }
-  .st-key-topnav [data-testid="stColumn"]:nth-child(3){ display:none !important; }
+  .st-key-topnav [data-testid="stColumn"]:nth-child(3){ order:-1; }
+  .st-key-topnav .seal{ width:40px; height:40px; }
+  .brand svg{ width:210px; }
   .st-key-topnav [data-testid="stPageLink"] p, .st-key-topnav [data-testid="stPageLink-NavLink"] span{ letter-spacing:.14em !important; font-size:.6rem !important; }
   .qhead h2{ font-size:2rem !important; }
   .st-key-w_hood [data-testid="stButtonGroup"] button, .st-key-w_i [data-testid="stButtonGroup"] button{ padding:.55rem .9rem !important; }
@@ -439,10 +448,16 @@ def inject():
     st.html(SPOT_JS, unsafe_allow_javascript=True)
 
 
-def hero(photo_url, kicker, title_html, lede="", corner="", short=False, pos="center 60%"):
+BRAND = """<div class="brand"><svg viewBox="0 0 270 80" aria-label="Table for 6">
+<ellipse cx="135" cy="40" rx="131" ry="36" fill="none" stroke="#EEE7D8" stroke-width="1.3"/>
+<text x="135" y="47" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="21" fill="#EEE7D8"
+ style="letter-spacing:.32em">TABLE FOR 6</text></svg></div>"""
+
+
+def hero(photo_url, kicker, title_html, lede="", corner="", short=False, pos="center 60%", brand=False):
     show(f"""<div class="fullbleed hero{' short' if short else ''}">
   <div class="ph" style="background-image:url('{photo_url}');background-position:{pos}"></div><div class="veil"></div>
-  <div class="copy"><div class="kick in">{kicker}</div><h1 class="in d1">{title_html}</h1>
+  <div class="copy">{BRAND if brand else ''}<div class="kick in">{kicker}</div><h1 class="in d1">{title_html}</h1>
   {f'<p class="lede in d2">{lede}</p>' if lede else ''}</div>
   {f'<div class="corner in d3">{corner}</div>' if corner else ''}<div class="cue"></div></div>""")
 

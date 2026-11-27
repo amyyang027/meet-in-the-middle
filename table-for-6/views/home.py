@@ -2,14 +2,13 @@ import streamlit as st
 from ui.theme import show, img, hero, HERO_LOCAL
 from t6.data import HOODS
 
-# the hero photo carries its own oval logo, so the nav seal steps aside on this page
-st.markdown('<style>.st-key-topnav .seal{visibility:hidden} .hero .ph{top:5.4rem !important; background-position:center top !important;} @media (max-width:900px){ .hero .ph{top:2rem !important;} }</style>', unsafe_allow_html=True)
+st.markdown('<style>.hero .ph{top:5.4rem !important; background-position:center top !important;} @media (max-width:900px){ .hero .ph{top:2rem !important;} }</style>', unsafe_allow_html=True)
 
 hero(HERO_LOCAL, "San Francisco &nbsp;·&nbsp; East Bay &nbsp;·&nbsp; By invitation",
      "Six strangers.<br>One table.",
      "Tell us a little. We find the five people you'd get along with, the room you'd all love, "
      "and an hour that doesn't send anyone across the Bay Bridge at rush hour.",
-     corner="Scroll for the evening", pos="center top")
+     corner="Scroll for the evening", pos="center top", brand=True)
 
 show("""<div class="sec"><div class="reveal center"><div class="eyebrow">The house rules</div>
 <p class="statement">We don't do small talk with whoever's nearby. We do <em>the right five strangers</em>,
@@ -23,7 +22,7 @@ show(f'<div class="fullbleed marquee"><div class="track">{track}{track}</div></d
 show(f"""<div class="sec"><div class="sechead reveal"><div class="eyebrow">The evening, in three acts</div>
 <h2>How a table <em>comes together</em></h2><p>Hover over each act.</p></div><br>
 <div class="acts">
- <div class="act reveal"><div class="ph" style="background-image:url('{img("glasses_up", 1100)}')"></div>
+ <div class="act reveal"><div class="ph" style="background-image:url('{img("envelope", 1100)}')"></div>
   <div class="txt"><div class="num">I.</div><h3>The invitation</h3>
   <div class="more">Neighborhood, free evenings, cuisines you love, a few interests, and whether you'd like a mixed table.
   None of it is a filter. Every answer quietly nudges a score.</div><div class="line"></div></div></div>
