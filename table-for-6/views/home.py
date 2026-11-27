@@ -25,7 +25,7 @@ show(f"""<div class="sec"><div class="sechead reveal"><div class="eyebrow">The e
  <div class="act reveal"><div class="ph" style="background-image:url('{img("envelope", 1100)}')"></div>
   <div class="txt"><div class="num">I.</div><h3>The invitation</h3>
   <div class="more">Neighborhood, free evenings, cuisines you love, a few interests, and whether you'd like a mixed table.
-  None of it is a filter. Every answer quietly nudges a score.</div><div class="line"></div></div></div>
+  Taste and travel nudge a score. Your evenings and your table's gender mix are promises we keep.</div><div class="line"></div></div></div>
  <div class="act reveal"><div class="ph" style="background-image:url('{img("lamps", 1100)}')"></div>
   <div class="txt"><div class="num">II.</div><h3>The seating</h3>
   <div class="more">An integer program weighs taste, chemistry between every pair of guests, travel time and bridge tolls,

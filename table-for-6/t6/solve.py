@@ -18,11 +18,30 @@ def prob_at_least(probs, L):
     return dist[L:].sum()
 
 
+def gender_cap(n):
+    """Most guests of one gender allowed at a mixed table of size n: 3 n_g <= 2 n + 2 (3 of 4, 4 of 5, 4 of 6)."""
+    return (2 * n + 2) // 3
+
+
+def gender_ok(inst, S, partial=False):
+    """Hard gender rule. A table with a guest who asked for same-gender is all one gender.
+    Every other table is mixed: no gender holds more than gender_cap(|S|) seats.
+    partial=True checks whether a growing set can still be completed (cap at the largest size U)."""
+    S = list(S)
+    g = inst.gender[S]
+    if inst.same_pref[S].any():
+        return bool((g == g[0]).all())
+    cap = gender_cap(inst.p.U if partial else len(S))
+    return int(np.bincount(g, minlength=3).max()) <= cap
+
+
 def table_ok(inst, S, v, t):
     p = inst.p
     if not (p.L <= len(S) <= p.U) or inst.R[v, t] == 0:
         return False
     S = list(S)
+    if not gender_ok(inst, S):
+        return False
     if not np.all(np.isfinite(inst.c[S, v, t])):
         return False
     if p.show_mode == "expected" and inst.show[S].sum() < p.exp_att - EPS:
@@ -120,6 +139,7 @@ def build_tables(inst, v, t, w, wpair, pool, n_seeds=8, rng=None, want=3):
         S = [s]
         while len(S) < p.U:
             cand = np.setdiff1d(pool, S)
+            cand = np.array([c for c in cand if gender_ok(inst, S + [int(c)], partial=True)], dtype=int)
             if len(cand) == 0:
                 break
             gain = w[cand] + wpair[np.ix_(cand, S)].sum(1)
@@ -230,7 +250,11 @@ def solve_greedy(inst):
 
 # ---------------------------------------------------------------- Model A
 def solve_model_a(inst, time_limit=120, msg=False):
-    """Compact MILP with x_ik, z_k, y_ijk, u_i (+ age-span and fairness variables)."""
+    """Compact MILP with x_ik, z_k, y_ijk, u_i, s_k (+ age-span and fairness variables).
+
+    Gender rule: s_k = 1 marks a same-gender table (allowed only if a guest who asked for one sits there);
+    a guest who asked for same-gender excludes every other gender from the table; otherwise
+    3 n_gk <= 2 n_k + 2 for every gender g."""
     t0 = time.time()
     p, N = inst.p, inst.N
     K = [(v, t, r) for v in range(inst.V) for t in range(3) for r in range(inst.R[v, t])]
@@ -276,6 +300,15 @@ def solve_model_a(inst, time_limit=120, msg=False):
             m += amax[k] >= inst.age[i] * x[i, k]
             m += amin[k] <= inst.age[i] + Amax * (1 - x[i, k])
         m += e[k] >= amax[k] - amin[k] - p.age_span - Amax * (1 - z[k])
+        req = [i for i in by_tab[k] if inst.same_pref[i]]
+        sk = pulp.LpVariable(f"s_{k}", cat="Binary") if req else 0
+        if req:
+            m += sk <= pulp.lpSum(x[i, k] for i in req)
+            for i in req:
+                m += pulp.lpSum(x[j, k] for j in by_tab[k] if inst.gender[j] != inst.gender[i]) <= p.U * (1 - x[i, k])
+        for g in range(3):
+            ng = pulp.lpSum(x[i, k] for i in by_tab[k] if inst.gender[i] == g)
+            m += 3 * ng - 2 * s <= 2 + p.U * sk
         if r > 0:
             m += z[k] <= z[k - 1]                           # symmetry breaking between copies
     for (i, j, k), var in y.items():
@@ -344,6 +377,21 @@ def exact_pricing(inst, v, t, w, wpair, time_limit=20.0):
             else:
                 h.addRow(-1.0, inf, 3, np.array([col, a, b], dtype=np.int32), np.array([1.0, -1.0, -1.0]))
             col += 1
+    # gender rule (see solve_model_a): same-gender flag sg, requester exclusion, mixed-table cap
+    gen = inst.gender[pool]; req = [a for a in range(n) if inst.same_pref[pool[a]]]
+    cs = col; h.addCol(0.0, 0.0, 1.0 if req else 0.0, 0, E, F); col += 1
+    h.changeColsIntegrality(1, np.array([cs], dtype=np.int32), np.array([highspy.HighsVarType.kInteger]))
+    if req:
+        h.addRow(-inf, 0.0, len(req) + 1, np.array([cs] + req, dtype=np.int32), np.array([1.0] + [-1.0] * len(req)))
+        for a in req:
+            other = [b for b in range(n) if gen[b] != gen[a]]
+            if other:
+                h.addRow(-inf, float(p.U), len(other) + 1, np.array(other + [a], dtype=np.int32),
+                         np.array([1.0] * len(other) + [float(p.U)]))
+    for g in range(3):
+        coef = np.where(gen == g, 1.0, -2.0)                # 3 n_g - 2 n = sum (3[g_i=g] - 2) b_i
+        h.addRow(-inf, 2.0, n + 1, np.array(list(range(n)) + [cs], dtype=np.int32),
+                 np.array(list(coef) + [-float(p.U)]))
     # age spread: e >= amax - amin - span, objective -rho_age * e
     ages = inst.age[pool].astype(float)
     A = float(inst.age.max())

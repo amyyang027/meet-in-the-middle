@@ -31,7 +31,7 @@ TOLL = 8.0                                         # $ westbound (East Bay -> SF
 @dataclass
 class Params:
     w: tuple = (3.5, 3.5, 1.5, 1.5)     # weights on venue type, cuisine, price, slot preference
-    beta: tuple = (3.0, 1.5, 0.8)       # interests, age gap, gender mix
+    beta: tuple = (3.0, 1.5)            # interests, age gap (gender is a rule, not a score)
     lam_d: float = 0.08                 # utility per minute of travel
     lam_tau: float = 0.20               # utility per dollar of toll
     M_unseated: float = 8.0             # penalty M_i for leaving user i without a table
@@ -230,11 +230,8 @@ def derive(inst):
     nrm = np.linalg.norm(X, axis=1) + 1e-9
     cos = (X @ X.T) / np.outer(nrm, nrm)
     agegap = np.abs(inst.age[:, None] - inst.age[None, :]) / 10
-    diff = inst.gender[:, None] != inst.gender[None, :]
-    anysame = inst.same_pref[:, None] | inst.same_pref[None, :]
-    mix = np.where(anysame, np.where(diff, -1.0, 1.0), diff.astype(float))
     b = p.beta
-    q = b[0] * cos - b[1] * agegap + b[2] * mix
+    q = b[0] * cos - b[1] * agegap
     np.fill_diagonal(q, 0.0)
     inst.q = q
     return inst

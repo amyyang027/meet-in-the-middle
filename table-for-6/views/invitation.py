@@ -11,7 +11,7 @@ hero(img("candle_dinner", 2200), "The invitation", "Request a seat.",
 
 STEPS = ["Where", "Who", "Mood", "Talk", "When", "Seal"]
 LIKE = ["Not for me", "Maybe", "Yes please"]
-DEFAULTS = dict(hood=None, transport="Transit or walking", age=28, gender="Woman", mix="Mixed is great",
+DEFAULTS = dict(hood=None, transport="Transit or walking", age=28, gender="Woman", mix="Mixed table",
                 dinner="Yes please", coffee="Maybe", drinks="Yes please", budget="$$", cuisines=["Japanese", "Italian"],
                 interests=["Live music", "Cooking", "Film"], slots=["Fri 7pm", "Sat 7pm"], spot_q="", spot=None)
 if "ans" not in st.session_state:
@@ -64,8 +64,9 @@ with st.container(key="wizard"):
         with c1:
             keep("gender", st.segmented_control("Gender", GENDERS, default=A["gender"], key="w_g") or A["gender"])
         with c2:
-            keep("mix", st.segmented_control("Table mix", ["Mixed is great", "Prefer same gender"], default=A["mix"],
+            keep("mix", st.segmented_control("Table mix", ["Mixed table", "Same gender only"], default=A["mix"],
                                              key="w_mix") or A["mix"])
+            st.caption("A rule, not a wish: we never seat you otherwise. Mixed tables keep any one gender to at most 4 of 6.")
     elif step == 2:
         c1, c2, c3 = st.columns(3, gap="large")
         for col, name, label in [(c1, "dinner", "A long dinner"), (c2, "coffee", "Weekend coffee"), (c3, "drinks", "Drinks at a bar")]:
@@ -140,7 +141,7 @@ if step == len(STEPS) - 1 and seal:
     sp = A["spot"] if isinstance(A["spot"], dict) else None
     st.session_state.profile = dict(
         hood=hood_names.index(A["hood"]), car=(A["transport"] == "Driving"), age=A["age"],
-        gender=GENDERS.index(A["gender"]), same_gender=(A["mix"] == "Prefer same gender"),
+        gender=GENDERS.index(A["gender"]), same_gender=(A["mix"] == "Same gender only"),
         interests=tuple(TAG_NAMES.index(t) for t in A["interests"]),
         type_pref=(LV[A["dinner"]], LV[A["coffee"]], LV[A["drinks"]]),
         cuisine_pref=tuple(5 if c in A["cuisines"] else 2 for c in CUISINES),
@@ -194,7 +195,11 @@ if prof:
     show("""<div class="sec tight"><div class="sechead reveal"><div class="eyebrow">Your card</div>
 <h2>Sealed, <em>and delivered</em></h2></div></div>""")
     if not found:
-        st.info("No table fit you this round: no open venue matched your free evenings. Try adding another evening.")
+        if prof.get("same_gender"):
+            st.info("No table fit you this round. You asked for a same-gender table, and not enough guests of your gender "
+                    "were free on your evenings. Try adding another evening, or choose a mixed table.")
+        else:
+            st.info("No table fit you this round: no open venue matched your free evenings. Try adding another evening.")
     else:
         d = describe_table(inst, *found)
         me = [g for g in d["guests"] if g["id"] == 0][0]

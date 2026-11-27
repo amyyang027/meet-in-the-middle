@@ -27,6 +27,7 @@ and <i>y</i><sub>ijk</sub> records that <i>i</i> and <i>j</i> share it, lineariz
 It stalls from 24 guests on.</p></div></div>""")
     st.latex(r"\max \sum_{i,k} c_{ik}x_{ik} + \sum_k\sum_{i<j} q_{ij}y_{ijk} - M\sum_i u_i")
     st.latex(r"\textstyle\sum_k x_{ik}+u_i=1,\quad L z_k \le \sum_i x_{ik} \le U z_k")
+    st.latex(r"\textstyle 3\sum_{i:\,\ell_i=\ell} x_{ik} - 2\sum_i x_{ik} \le 2 + U s_k")
 with c2:
     show("""<div class="sec tight"><div class="mcard reveal" style="border-color:#C8A96A"><div class="eyebrow">III. Model B</div>
 <h4>Column generation</h4><p>Choose whole tables instead. Each column <i>g</i> is a complete table with value <i>C</i><sub>g</sub>, and the master
@@ -42,7 +43,7 @@ show("""<div class="sec tight"><div class="sechead reveal"><div class="eyebrow">
  <div class="stat"><b>θ</b><span><span style="color:var(--ivory)">Fairness floor.</span> Weight <i>γ</i> = 10 lifts the worst-off guest from −0.45 to 3.9 for 1.2% of total value.</span></div>
  <div class="stat"><b>λ<sub style="font-size:.4em">d</sub></b><span><span style="color:var(--ivory)">Value of time.</span> Pricing a minute at 0.08 points cuts the average trip from 50 to 23 minutes.</span></div>
  <div class="stat"><b>α</b><span><span style="color:var(--ivory)">No-show guarantee.</span> Each table has at least a 90% chance of four guests, checked with a Poisson-binomial DP.</span></div>
- <div class="stat"><b>q<sub style="font-size:.4em">ij</sub></b><span><span style="color:var(--ivory)">Chemistry.</span> Shared interests, age gaps and a mixed-table preference, flipped by a guest who prefers same-gender tables.</span></div>
+ <div class="stat"><b>ℓ<sub style="font-size:.4em">i</sub></b><span><span style="color:var(--ivory)">Gender is a rule.</span> Ask for a same-gender table and you only get one. Every other table is mixed, with at most 4 of 6 guests sharing a gender. Never traded for points.</span></div>
 </div></div>""")
 
 show("""<div class="sec tight"><div class="sechead reveal"><div class="eyebrow">V. The evidence</div>
