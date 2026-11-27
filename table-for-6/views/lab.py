@@ -11,7 +11,7 @@ BLURB = {
     "Model A": ("Exact MILP, guest by guest.",
                 "Provably best when it finishes, but slow. We only run it for 24 guests or fewer."),
     "Model B": ("Column generation, whole tables at once.",
-                "Our engine. Duals point it to good tables, and it stays within about 1% of optimal in our tests."),
+                "Our engine. Duals point it to good tables, and it matched the proven optimum in 8 of 10 small tests."),
 }
 
 hero(img("bar_glow", 2200), "The lab", "Same guests.<br>Four seatings.",

@@ -40,15 +40,15 @@ problem picks which tables to open. A pricing step uses the duals <i>π</i><sub>
 show("""<div class="sec tight"><div class="sechead reveal"><div class="eyebrow">IV. The add-ons</div>
 <h2>Fair, close, <em>and actually full</em></h2></div>
 <div class="stats reveal">
- <div class="stat"><b>θ</b><span><span style="color:var(--ivory)">Fairness floor.</span> Weight <i>γ</i> = 10 lifts the worst-off guest from −0.45 to 3.9 for 1.2% of total value.</span></div>
- <div class="stat"><b>λ<sub style="font-size:.4em">d</sub></b><span><span style="color:var(--ivory)">Value of time.</span> Pricing a minute at 0.08 points cuts the average trip from 50 to 23 minutes.</span></div>
+ <div class="stat"><b>θ</b><span><span style="color:var(--ivory)">Fairness floor.</span> Weight <i>γ</i> = 10 lifts the worst-off guest from 1.2 to 2.6 for 1.3% of total value.</span></div>
+ <div class="stat"><b>λ<sub style="font-size:.4em">d</sub></b><span><span style="color:var(--ivory)">Value of time.</span> Pricing a minute at 0.08 points cuts the average trip from 48 to 23 minutes.</span></div>
  <div class="stat"><b>α</b><span><span style="color:var(--ivory)">No-show guarantee.</span> Each table has at least a 90% chance of four guests, checked with a Poisson-binomial DP.</span></div>
  <div class="stat"><b>ℓ<sub style="font-size:.4em">i</sub></b><span><span style="color:var(--ivory)">Gender is a rule.</span> Ask for a same-gender table and you only get one. Every other table is mixed, with at most 4 of 6 guests sharing a gender. Never traded for points.</span></div>
 </div></div>""")
 
 show("""<div class="sec tight"><div class="sechead reveal"><div class="eyebrow">V. The evidence</div>
-<h2>What the <em>experiments</em> say</h2><p>From the report. Model B matches Model A's proven optimum on 9 of 10 small instances,
-beats Greedy by about 9.5% from 60 guests up, and seats 240 guests in about three and a half minutes.</p></div></div>""")
+<h2>What the <em>experiments</em> say</h2><p>From the report. Model B matches Model A's proven optimum on 8 of 10 small instances,
+beats Greedy by about 19% from 60 guests up, and seats 240 guests in about five and a half minutes, all under the gender rule.</p></div></div>""")
 for f, cap in [("fig_quality_scale_cg.png", "Quality against the certified bound, solve time, and column generation converging."),
                ("fig_tradeoffs.png", "What the add-ons buy: travel against satisfaction, the fairness floor, and no-show protection."),
                ("fig_map.png", "Random seating against Model B on the same 60 guests.")]:

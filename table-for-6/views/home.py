@@ -47,8 +47,8 @@ show(f"""<div class="sec"><div class="split">
   <p>Until then, you get a hint: their neighborhoods, an age range, and the interests the six of you share.
   We think a little mystery is good for an evening.</p>
   <p style="color:var(--mist)">Behind the curtain, a column-generation engine considers hundreds of thousands of possible
-  tables and keeps the few hundred worth seating. In our tests it lands within about one percent of the
-  best possible seating plan, in seconds.</p></div>
+  tables and keeps the few hundred worth seating. In our tests it matches the proven best seating plan
+  in 8 of 10 small cases, in seconds.</p></div>
 </div></div>""")
 
 show(f"""<div class="fullbleed spot"><div class="ph" style="background-image:url('{img("toast_white", 2200)}')"></div>
@@ -67,10 +67,10 @@ show(f"""<div class="sec"><div class="sechead reveal"><div class="eyebrow">Where
 </div></div>""")
 
 show("""<div class="sec tight"><div class="eyebrow reveal">By the numbers</div><div class="stats reveal">
- <div class="stat"><b>~1%</b><span>from the best possible seating plan, on cases small enough to prove it</span></div>
- <div class="stat"><b>−54%</b><span>shorter trips once a minute of travel has a price</span></div>
- <div class="stat"><b>4.2%</b><span>of tables fall below four guests after no-shows, down from 15.3%</span></div>
- <div class="stat"><b>240</b><span>guests seated in about three and a half minutes</span></div>
+ <div class="stat"><b>8 / 10</b><span>small cases where it finds the proven best seating plan</span></div>
+ <div class="stat"><b>−52%</b><span>shorter trips once a minute of travel has a price</span></div>
+ <div class="stat"><b>6.3%</b><span>of tables fall below four guests after no-shows, down from 22.8%</span></div>
+ <div class="stat"><b>240</b><span>guests seated in about five and a half minutes</span></div>
 </div></div>""")
 
 show(f"""<div class="fullbleed band" style="height:70vh"><div class="ph" style="background-image:url('{img("candles_row", 2200)}')"></div>

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.26)  26 NOV 2026 21:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.26)  27 NOV 2026 02:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -514,7 +514,7 @@ Package: titlesec 2023/10/27 v2.16 Sectioning titles
 )
 \c@proposition=\count315
 LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 3
-5.
+6.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ppl.fd
 File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
@@ -527,24 +527,24 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -555,14 +555,14 @@ LaTeX Font Info:    ... okay on input line 35.
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
 * h-part:(L,W,R)=(43.36243pt, 527.57014pt, 43.36243pt)
-* v-part:(T,H,B)=(39.74872pt, 711.85884pt, 43.36243pt)
+* v-part:(T,H,B)=(36.135pt, 719.08627pt, 39.74872pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
 * \textwidth=527.57014pt
-* \textheight=711.85884pt
+* \textheight=719.08627pt
 * \oddsidemargin=-28.90756pt
 * \evensidemargin=-28.90756pt
-* \topmargin=-69.52127pt
+* \topmargin=-73.135pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=10.0pt
@@ -606,19 +606,19 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 35.
-Package microtype Info: Applying patch `item' on input line 35.
-Package microtype Info: Applying patch `toc' on input line 35.
-Package microtype Info: Applying patch `eqnum' on input line 35.
-Package microtype Info: Applying patch `footnote' on input line 35.
-Package microtype Info: Applying patch `verbatim' on input line 35.
+LaTeX Info: Redefining \microtypecontext on input line 36.
+Package microtype Info: Applying patch `item' on input line 36.
+Package microtype Info: Applying patch `toc' on input line 36.
+Package microtype Info: Applying patch `eqnum' on input line 36.
+Package microtype Info: Applying patch `footnote' on input line 36.
+Package microtype Info: Applying patch `verbatim' on input line 36.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 35.
+LaTeX Info: Redefining \showhyphens on input line 36.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -626,51 +626,51 @@ Package microtype Info: No adjustment of character kerning.
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ppl.cfg
 File: mt-ppl.cfg 2005/11/16 v1.6 microtype config. file: Palatino (RS)
 )
-Package hyperref Info: Link coloring ON on input line 35.
+Package hyperref Info: Link coloring ON on input line 36.
  (./main.out)
 (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
 LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
-37.
+38.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
-37.
+38.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
-37.
+38.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 37.
+(Font)              scaled to size 12.50409pt on input line 38.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 37.
+(Font)              scaled to size 9.37807pt on input line 38.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 37.
+(Font)              scaled to size 7.29405pt on input line 38.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 37.
+(Font)              scaled to size 12.50409pt on input line 38.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 37.
+(Font)              scaled to size 9.37807pt on input line 38.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 37.
+(Font)              scaled to size 7.29405pt on input line 38.
 LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
-37.
+38.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
@@ -680,7 +680,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 3
-7.
+8.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
@@ -692,22 +692,22 @@ Package microtype Info: Loading generic protrusion settings for font family
 <fig/map.pdf, id=63, 505.89pt x 224.037pt>
 File: fig/map.pdf Graphic file (type pdf)
 <use fig/map.pdf>
-Package pdftex.def Info: fig/map.pdf  used on input line 48.
+Package pdftex.def Info: fig/map.pdf  used on input line 49.
 (pdftex.def)             Requested size: 527.57014pt x 233.64249pt.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 50.
+(Font)              scaled to size 10.42007pt on input line 51.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 50.
+(Font)              scaled to size 7.91925pt on input line 51.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 50.
+(Font)              scaled to size 6.25204pt on input line 51.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 50.
+(Font)              scaled to size 10.42007pt on input line 51.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 50.
+(Font)              scaled to size 7.91925pt on input line 51.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 50.
+(Font)              scaled to size 6.25204pt on input line 51.
 
-Overfull \hbox (25.92097pt too wide) in paragraph at lines 66--67
+Overfull \hbox (25.92097pt too wide) in paragraph at lines 67--68
 [] []\OT1/ppl/b/n/10 (-20) Sets.[] \OT1/ppl/m/n/10 (-20) Users $\OML/zplm/m/it/
 10 i\OT1/ppl/m/n/10 (-20) , \OML/zplm/m/it/10 j \OMS/zplm/m/n/10 2 I$ \OT1/ppl/
 m/n/10 (-20) with $\OMS/zplm/m/n/10 jIj \OT1/zplm/m/n/10 = \OML/zplm/m/it/10 N$
@@ -729,20 +729,20 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<fig/quality_scale_cg.pdf, id=214, 520.34402pt x 180.675pt>
+[4]
+<fig/quality_scale_cg.pdf, id=233, 520.34402pt x 180.675pt>
 File: fig/quality_scale_cg.pdf Graphic file (type pdf)
 <use fig/quality_scale_cg.pdf>
 Package pdftex.def Info: fig/quality_scale_cg.pdf  used on input line 32.
 (pdftex.def)             Requested size: 527.57014pt x 183.19432pt.
-[4]
-<fig/tradeoffs.pdf, id=230, 520.34402pt x 180.675pt>
+<fig/tradeoffs.pdf, id=237, 520.34402pt x 180.675pt>
 File: fig/tradeoffs.pdf Graphic file (type pdf)
 <use fig/tradeoffs.pdf>
 Package pdftex.def Info: fig/tradeoffs.pdf  used on input line 46.
 (pdftex.def)             Requested size: 527.57014pt x 183.19432pt.
  [5 <./fig/quality_scale_cg.pdf>]) [6 <./fig/tradeoffs.pdf>] (./appendix.tex
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 40.
+put line 41.
 ) [7
 
 
@@ -752,16 +752,16 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3210D1229C5DE592CBB36050412D94F2;2459.
+(rerunfilecheck)             Checksum: 548FA3529B8938BCA1CAF9E4A04B7C47;2421.
  ) 
 Here is how much of TeX's memory you used:
- 16856 strings out of 476106
- 265739 string characters out of 5793932
- 1953975 words of memory out of 5000000
- 38259 multiletter control sequences out of 15000+600000
- 609917 words of font info for 322 fonts, out of 8000000 for 9000
+ 16872 strings out of 476106
+ 265890 string characters out of 5793932
+ 1956975 words of memory out of 5000000
+ 38261 multiletter control sequences out of 15000+600000
+ 610645 words of font info for 330 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 75i,11n,79p,1001b,470s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,1143b,630s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
@@ -772,10 +772,10 @@ t/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts
 lic/mathpazo/fplmri.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino
 /uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (7 pages, 308256 bytes).
+Output written on main.pdf (7 pages, 311348 bytes).
 PDF statistics:
- 500 PDF objects out of 1000 (max. 8388607)
- 239 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
+ 508 PDF objects out of 1000 (max. 8388607)
+ 247 compressed objects within 3 object streams
+ 57 named destinations out of 1000 (max. 500000)
  77440 words of extra memory for PDF output out of 89155 (max. 10000000)
 
