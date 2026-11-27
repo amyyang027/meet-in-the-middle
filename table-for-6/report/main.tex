@@ -1,0 +1,194 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.6in,top=0.5in,bottom=0.55in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,multirow}
+\usepackage{graphicx,subcaption}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{microtype}
+\usepackage{mathpazo}
+\usepackage{enumitem}
+\usepackage{algorithm,algpseudocode}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue,urlcolor=MidnightBlue,citecolor=MidnightBlue]{hyperref}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{7pt}{3pt}
+\setlist{itemsep=1pt,topsep=2pt}
+\setlength{\parskip}{2pt}
+\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{4pt}
+\setlength{\abovedisplayshortskip}{2pt}\setlength{\belowdisplayshortskip}{2pt}
+\setlength{\textfloatsep}{8pt}\setlength{\floatsep}{6pt}\setlength{\intextsep}{6pt}
+\setlength{\abovecaptionskip}{3pt}
+\newtheorem{proposition}{Proposition}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{\vspace{-1.2cm}\textbf{Table for 6}\\[2pt]
+\large Seating strangers across the Bay with integer programming and column generation}
+\author{IEOR 240, Fall 2026 \quad\textbullet\quad [Group member names]\\
+\small Video: \href{https://example.com}{[video link]} \quad\textbullet\quad Code: \href{https://github.com/amyyang027/meet-in-the-middle/tree/claude/project-thread-34l67c/table-for-6}{\texttt{github.com/amyyang027/meet-in-the-middle}} \quad\textbullet\quad Demo: \href{https://tablefor6.streamlit.app}{\texttt{tablefor6.streamlit.app}}}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1.0cm}
+
+\section{The problem: a city full of strangers}
+\label{sec:intro}
+
+A city is a place where you can be surrounded by 800{,}000 people and still eat dinner with your phone. Plenty of people would like to meet someone new, but the usual options are a bar (loud), an app (swiping), or a friend of a friend (finite). \emph{Table for 6} is a simpler idea: sign up, answer a short survey, and on Saturday you are at a table with five strangers at a place you would actually like, at a time you are free, without crossing the Bay Bridge at rush hour for it.
+
+Behind that pitch is a real optimization problem. A good table needs three things at once: the \emph{place} fits everyone's taste and budget, the \emph{people} fit each other, and the \emph{trip} is short for everybody. These pull against each other. The best Ethiopian place for an Oakland vegetarian may be a 45-minute drive for the Sunset resident who would otherwise be their ideal tablemate. Random seating ignores all of this (Figure~\ref{fig:map}, left), and seating by hand stops working at about the size of a wedding.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig/map.pdf}
+\vspace{-6pt}
+\caption{The same 60 users and venues, seated two ways. Each line joins a user's home to their table's venue. Random seating sends people back and forth across the Bay; Model B keeps most tables on one side and cuts the average trip from 53 to 24 minutes, raises average satisfaction $p$ from 5.0 to 6.1, raises average pair compatibility $q_{ij}$ from 0.10 to 0.87, and seats all 60 users instead of 58, all under the gender rule.}
+\label{fig:map}
+\end{figure}
+
+\paragraph{What we built.}
+\begin{enumerate}[leftmargin=*]
+\item A model in which taste, interests, age, and travel enter a satisfaction score, while availability and gender are hard rules (Section~\ref{sec:setup}).
+\item \textbf{Model A}, a compact MILP built with class techniques: binary assignment variables $x_{ik}$, big-$M$ linking, and the logical AND linearization for pairs of users (Section~\ref{sec:modelA}).
+\item \textbf{Model B}, a set partitioning reformulation solved by \textbf{column generation} with a certified upper bound from weak duality (Section~\ref{sec:modelB}). This is our method beyond the course.
+\item Three add-ons the group agreed on: a fairness floor, table diversity, and robustness to no-shows. The last one is only expressible exactly in Model B (Section~\ref{sec:addons}).
+\item Experiments on synthetic Bay Area data comparing random seating, a greedy heuristic, Model A, and Model B (Section~\ref{sec:results}).
+\end{enumerate}
+
+\section{Setup and data}
+\label{sec:setup}
+
+\paragraph{Sets.} Users $i,j\in\I$ with $|\I|=N$; venues $v\in\V$ (restaurants, cafes, and bars); time slots $t\in\T=\{\text{Fri 7pm},\ \text{Sat 11am},\ \text{Sat 7pm}\}$. Venue $v$ can host $R_{vt}\in\{0,1,2\}$ tables in slot $t$, with $R_{vt}=0$ when it is closed (cafes are closed at night, bars in the morning). A \emph{candidate table} $k\in\K$ is one of the $R_{vt}$ copies of an open pair $(v,t)$, and we write $v(k)$ and $t(k)$ for its venue and slot. Fixing the venue and slot of each candidate table in advance is the key modeling choice: travel and tolls become constants for each user and table, so the model stays linear. This mirrors the hospital matching example from lecture, where we use binary $x_{ij}$ rather than a variable that holds a hospital label.
+
+\paragraph{User-to-table satisfaction.} For user $i$ at venue $v$ in slot $t$,
+\begin{equation}
+p_{ivt} = w_1\,m^{\text{type}}_{iv} + w_2\,m^{\text{cuisine}}_{iv} + w_3\,m^{\text{price}}_{iv} + w_4\,m^{\text{slot}}_{it},
+\end{equation}
+where each match score $m\in[0,1]$ comes from a survey answer (for example $m^{\text{type}}_{iv}=(\text{rating}_{i,\text{type}(v)}-1)/4$ on a 1--5 scale) and $w=(3.5,3.5,1.5,1.5)$, so $p_{ivt}\in[0,10]$. Subtracting the cost of getting there gives the net value
+\begin{equation}
+c_{ik} = p_{i\,v(k)\,t(k)} - \lambda_d\, d_{i\,v(k)\,t(k)} - \lambda_\tau\, \tau_{i\,v(k)},
+\end{equation}
+with travel time $d_{ivt}$ in minutes, toll $\tau_{iv}$ in dollars, $\lambda_d=0.08$ per minute, and $\lambda_\tau=0.20$ per dollar. In words, 25 minutes of travel costs as much as a cuisine you rate 1 instead of 5, and an \$8 bridge toll costs 1.6 points.
+
+\paragraph{Pairwise compatibility.} For two users $i\neq j$,
+\begin{equation}
+q_{ij} = \beta_1\cos(\mathbf{h}_i,\mathbf{h}_j) - \beta_2\,\frac{|\text{age}_i-\text{age}_j|}{10},
+\qquad \beta=(3.0,\,1.5),
+\end{equation}
+where $\mathbf{h}_i\in\{0,1\}^{15}$ is user $i$'s interest vector (hiking, board games, jazz, and so on). Note that $q_{ij}$ can be negative. Gender is deliberately \emph{not} in $q_{ij}$: we did not want the model to trade a guest's comfort for a few points of shared interests, so gender is a rule, below.
+
+\paragraph{Feasibility.} Tables have between $L=4$ and $U=6$ people, and two rules about users are hard. \emph{Availability:} user $i$ is never seated in a slot with $a_{it}=0$. \emph{Gender:} let $\ell_i\in\{\text{W},\text{M},\text{NB}\}$ be user $i$'s gender and $\Q$ the users who asked for a same-gender table. A table with a member of $\Q$ seats only that member's gender. Every other table must be mixed: if it seats $n$ people, at most $\lfloor(2n+2)/3\rfloor$ of them share a gender (3 of 4, 4 of 5, 4 of 6), so nobody is the only one of their gender at a table of six. A user in $\Q$ with too few same-gender peers stays unseated, which the penalty $M$ makes the last resort.
+
+\paragraph{Synthetic data.} Our group can run a survey later, but for now every instance comes from a generator that samples users and venues around eight Bay Area neighborhoods (five in San Francisco, three in the East Bay). Ages are roughly normal around 28; interests come from five latent ``personas'' so that compatible people actually exist; 55\% of users drive and the rest take transit. Travel time is $1.35\times$ the straight-line distance at 24 km/h by car or 17 km/h by transit, plus 6 minutes to park or walk. A trip across the bay goes through the Bay Bridge, with 5--15 extra minutes depending on the slot, and drivers heading west into San Francisco pay an \$8 toll. The generator scales the number of venues with $N$ (about $N/6$) so that capacity is tight but feasible. Appendix~\ref{app:params} lists every parameter.
+
+\section{Model A: a compact MILP}
+\label{sec:modelA}
+
+\paragraph{Decision variables.}
+$x_{ik}\in\{0,1\}$ is $1$ if user $i$ sits at table $k$ (defined only when $a_{i\,t(k)}=1$);
+$z_k\in\{0,1\}$ is $1$ if table $k$ opens;
+$y_{ijk}\in[0,1]$ for $i<j$ is $1$ if users $i$ and $j$ both sit at table $k$;
+$u_i\in\{0,1\}$ is $1$ if user $i$ is not seated this round;
+$s_k\in\{0,1\}$ is $1$ if table $k$ is a same-gender table;
+$\overline{A}_k,\underline{A}_k\ge 0$ are the oldest and youngest ages at table $k$, and $e_k\ge 0$ is the age spread above $\bar{A}=12$ years.
+
+\paragraph{Objective.} Maximize total satisfaction net of travel, plus pair compatibility, minus a penalty $M=8$ for every user left out and a penalty $\kappa=0.5$ per year of age spread beyond $\bar A$:
+\begin{equation}
+\max\quad \sum_{i\in\I}\sum_{k\in\K} c_{ik}\,x_{ik} \;+\; \sum_{k\in\K}\sum_{i<j} q_{ij}\,y_{ijk} \;-\; M\sum_{i\in\I}u_i \;-\; \kappa\sum_{k\in\K} e_k .
+\label{eq:objA}
+\end{equation}
+
+\paragraph{Constraints.}
+\begin{alignat}{3}
+&\textstyle\sum_{k\in\K} x_{ik} + u_i = 1 &\qquad& \forall\, i\in\I &\qquad& \text{sit once or be left out} \label{eq:assign}\\
+&L\,z_k \le \textstyle\sum_{i\in\I} x_{ik} \le U\,z_k && \forall\, k\in\K && \text{4 to 6 at an open table} \label{eq:size}\\
+&y_{ijk}\le x_{ik},\quad y_{ijk}\le x_{jk} && \forall\, i<j,\ k && \text{pair only if both sit there} \label{eq:and1}\\
+&y_{ijk}\ge x_{ik}+x_{jk}-1 && \forall\, i<j,\ k:\ q_{ij}<0 && \text{a bad pair cannot hide} \label{eq:and2}\\
+&\overline{A}_k \ge \text{age}_i\,x_{ik},\quad \underline{A}_k \le \text{age}_i + A^{\max}(1-x_{ik}) && \forall\, i,k && \text{age range} \label{eq:age}\\
+&e_k \ge \overline{A}_k - \underline{A}_k - \bar A - A^{\max}(1-z_k) && \forall\, k && \text{age spread} \\
+&s_k \le \textstyle\sum_{i\in\Q} x_{ik},\quad \sum_{j:\,\ell_j\neq\ell_i} x_{jk} \le U(1-x_{ik}) && \forall\, k,\ i\in\Q && \text{same-gender request} \label{eq:g1}\\
+&3\textstyle\sum_{i:\,\ell_i=\ell} x_{ik} - 2\sum_{i} x_{ik} \le 2 + U s_k && \forall\, k,\ \ell && \text{mixed otherwise} \label{eq:g2}\\
+&z_k \le z_{k-1} && \text{copies of one } (v,t) && \text{symmetry breaking} \label{eq:sym}
+\end{alignat}
+Constraint~\eqref{eq:size} is the big-$M$ linking pattern from lecture with $M=U$: no one can sit at a closed table, and an open table cannot have 1--3 people. Constraints~\eqref{eq:and1}--\eqref{eq:and2} are the logical AND trick: $y_{ijk}=x_{ik}x_{jk}$ at any integer point. When $q_{ij}>0$ the solver already wants $y_{ijk}$ as large as possible, so only the upper bounds are needed. Venue capacity $R_{vt}$ is built into $\K$, which has exactly $R_{vt}$ copies of $(v,t)$, and~\eqref{eq:sym} stops the solver from exploring copies that are just relabelings of each other. The gender rule is big-$M$ twice: \eqref{eq:g1} empties table $k$ of other genders once a requester sits there and lets $s_k=1$ only at such a table, and \eqref{eq:g2} is the cap $n_\ell\le\lfloor(2n+2)/3\rfloor$, switched off by $s_k$.
+
+\paragraph{Why Model A does not scale.} Model A is correct, but it is large and has a weak LP relaxation. With $N$ users and $|\K|$ tables there are $O(N^2|\K|)$ pair variables. At $N=60$ and $|\K|\approx 40$, that is about 70{,}000 $y_{ijk}$. Worse, the LP relaxation can set every $x_{ik}=1/|\K|$ and every $y_{ijk}$ to the same small fraction, so the bounds that branch and bound relies on are far from the truth. Branch and bound then has to work hard just to prove what it already found.
+
+\section{Model B: choose whole tables with column generation}
+\label{sec:modelB}
+
+\paragraph{Set partitioning reformulation.} Instead of seating people one at a time, choose whole tables. A \emph{column} $g$ is one complete table: a member set $S_g\subseteq\I$ with $L\le|S_g|\le U$ that obeys the gender rule, a venue $v_g$, and a slot $t_g$ that every member can attend. Let $\G$ be the set of all such tables, and $\G_{vt}\subseteq\G$ the tables at $(v,t)$. Each member's value at table $g$ splits the pair terms evenly,
+\begin{equation}
+U_{ig} = c_{i\,v_g t_g} + \tfrac12\textstyle\sum_{j\in S_g\setminus\{i\}} q_{ij},
+\qquad
+C_g = \textstyle\sum_{i\in S_g} U_{ig} - \kappa\, e_g ,
+\end{equation}
+where $e_g$ is table $g$'s age spread above $\bar A$. With $\lambda_g\in\{0,1\}$ for choosing table $g$ and $A_{ig}=1$ if $i\in S_g$, the master problem is
+\begin{align}
+\max\quad & \textstyle\sum_{g\in\G} C_g\,\lambda_g - M\sum_{i\in\I} u_i \label{eq:master}\\
+\text{s.t.}\quad & \textstyle\sum_{g\in\G} A_{ig}\,\lambda_g + u_i = 1 && \forall\, i\in\I && (\text{dual } \pi_i\ \text{free}) \notag\\
+& \textstyle\sum_{g\in\G_{vt}} \lambda_g \le R_{vt} && \forall\, (v,t) && (\text{dual } \mu_{vt}\ge 0). \notag
+\end{align}
+Every nonlinear piece of Model A (pairs, age range, gender rule) is now inside the constant $C_g$. That is the main advantage: any rule about a whole table can be checked by computing a number, not by adding variables. The catch is that $|\G|$ is enormous. With $N=60$ users, about 36 of whom are free in a typical slot, there are roughly 2.3 million possible groups of four to six people at each $(v,t)$.
+
+\paragraph{Column generation.} We never write down all of $\G$. We start with a few columns, then add only the ones that can help:
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Restricted master.} Solve the LP relaxation of~\eqref{eq:master} ($0\le\lambda_g\le1$) over the current columns $\G'\subseteq\G$, starting from the greedy solution's tables.
+\item \textbf{Duals.} Read the optimal duals: $\pi_i$ is what seating user $i$ is currently worth, and $\mu_{vt}$ is the shadow price of one more table at $(v,t)$.
+\item \textbf{Pricing.} For each $(v,t)$, look for a table with positive \emph{reduced cost}. As in Lecture 16, the reduced cost of a column is its objective coefficient minus $a_g^\top y^*$:
+\begin{equation}
+\bar{C}_g = C_g - \textstyle\sum_{i\in S_g}\pi_i - \mu_{v_g t_g}
+= \sum_{i\in S_g}\bigl(c_{i v_g t_g} - \pi_i\bigr) + \sum_{\substack{i<j\\ i,j\in S_g}} q_{ij} - \kappa e_g - \mu_{v_g t_g}.
+\label{eq:redcost}
+\end{equation}
+In a maximization LP, a column with $\bar C_g>0$ would improve the objective if it entered the basis.
+\item \textbf{Repeat or stop.} Add every column with $\bar C_g>0$ and return to step 1. When pricing finds none, the restricted master LP is optimal for the full LP over all of $\G$.
+\item \textbf{Integer solution.} Solve~\eqref{eq:master} as an IP over the generated columns with HiGHS branch and bound. This is called \emph{price-and-branch}.
+\end{enumerate}
+
+\paragraph{The pricing problem.} Maximizing~\eqref{eq:redcost} over $S\subseteq\{i: a_{it}=1\}$ with $L\le|S|\le U$ is a cardinality-constrained quadratic knapsack problem. It is Model A for a single table, with the duals folded into the weights. We solve it two ways. A fast heuristic grows a table greedily from several seed users and then improves it by swapping, adding, or dropping one member at a time (Algorithm~\ref{alg:pricing} in the appendix). The exact version is a small MILP with $b_i\in\{0,1\}$, the AND linearization on $b_ib_j$, and the same age-range and gender constraints as~\eqref{eq:age} and~\eqref{eq:g1}--\eqref{eq:g2}; the heuristic only grows sets that can still satisfy the gender rule. We use the heuristic in every iteration and the exact MILP only once at the end, to prove that no improving column is left.
+
+\paragraph{A certified bound from weak duality.}
+\begin{proposition}
+Let $(\pi,\mu)$ be the optimal duals of the restricted master, and let $\bar r_{vt}$ be any upper bound on $\max_{g\in\G_{vt}} \bar C_g$. Then
+\begin{equation}
+z^{\text{IP}} \;\le\; z^{\text{LP}} \;\le\; \textstyle\sum_{i\in\I}\pi_i + \sum_{(v,t)} R_{vt}\bigl(\mu_{vt}+\max\{0,\bar r_{vt}\}\bigr).
+\label{eq:ub}
+\end{equation}
+\end{proposition}
+\begin{proof}[Sketch]
+Raising each $\mu_{vt}$ to $\mu_{vt}+\max\{0,\bar r_{vt}\}$ makes every column's reduced cost nonpositive, so the shifted duals are feasible for the dual of the full LP. The column $u_i$ stays dual feasible because it is in every restricted master. By weak duality (Lectures 5--6), the dual objective at any dual feasible point bounds the primal LP, and the LP bounds the IP.
+\end{proof}
+\noindent When exact pricing proves $\bar r_{vt}\le 0$ everywhere, the bound equals $z^{\text{LP}}$ and the gap $(\text{UB}-z^{\text{IP}})/\text{UB}$ is a certificate of near-optimality, the same idea as pruning by bound in branch and bound.
+
+\subsection{Add-ons}
+\label{sec:addons}
+
+\paragraph{Fairness floor.} Maximizing the total can hand one person a bad table so that five others do slightly better. We add a variable $\theta$, the worst seated user's value, and reward it:
+\begin{equation}
+\max\ \eqref{eq:master} + \gamma\,\theta
+\quad\text{s.t.}\quad
+\theta \le \textstyle\sum_{g\in\G} U_{ig}\,\lambda_g - M\,u_i \quad \forall\, i\in\I \quad(\text{dual } \sigma_i\ge 0),
+\end{equation}
+so an unseated user counts as value $-M$ (which also stops the solver from ``protecting'' people by not seating them). This is the max-min idea from class, and it fits column generation cleanly: the reduced cost becomes $\bar C_g = \sum_{i\in S_g}\bigl[(1+\sigma_i)U_{ig}-\pi_i\bigr]-\kappa e_g-\mu_{v_gt_g}$, which is the same pricing problem with reweighted users.
+
+\paragraph{Table diversity.} The gender rule~\eqref{eq:g1}--\eqref{eq:g2} and the age-spread penalty $\kappa e_g$ together keep tables from being either a monoculture or a random mix of 22- and 45-year-olds. Gender is a constraint rather than a score, so no amount of shared interest can buy an exception.
+
+\paragraph{Robustness to no-shows.} If user $i$ shows up with probability $\phi_i$ (independently), a table of four collapses when anyone flakes. In Model A the best we can do is a linear proxy on expected attendance, $\sum_i\phi_i x_{ik}\ge E\,z_k$ with $E=4.25$. In Model B we can enforce the exact \emph{chance constraint} for each column,
+\begin{equation}
+\Pr\Bigl(\textstyle\sum_{i\in S_g}\xi_i\ge L\Bigr)\ge \alpha,\qquad \xi_i\sim\text{Bernoulli}(\phi_i),\ \alpha=0.9,
+\end{equation}
+by computing the Poisson-binomial distribution of attendance with a short dynamic program and discarding any table that fails. This constraint is nonlinear in $x$, so Model A cannot express it. In Model B it costs one function call per candidate table.
+
+\input{results}
+
+\clearpage
+\input{appendix}
+
+\end{document}

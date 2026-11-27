@@ -1,0 +1,73 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}The problem: a city full of strangers}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{The problem: a city full of strangers}{section.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{What we built.}{1}{figure.caption.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Setup and data}{1}{section.2}\protected@file@percent }
+\newlabel{sec:setup}{{2}{1}{Setup and data}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Sets.}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{User-to-table satisfaction.}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Pairwise compatibility.}{1}{equation.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The same 60 users and venues, seated two ways. Each line joins a user's home to their table's venue. Random seating sends people back and forth across the Bay; Model B keeps most tables on one side and cuts the average trip from 53 to 24 minutes, raises average satisfaction $p$ from 5.0 to 6.1, raises average pair compatibility $q_{ij}$ from 0.10 to 0.87, and seats all 60 users instead of 58, all under the gender rule.}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:map}{{1}{2}{The same 60 users and venues, seated two ways. Each line joins a user's home to their table's venue. Random seating sends people back and forth across the Bay; Model B keeps most tables on one side and cuts the average trip from 53 to 24 minutes, raises average satisfaction $p$ from 5.0 to 6.1, raises average pair compatibility $q_{ij}$ from 0.10 to 0.87, and seats all 60 users instead of 58, all under the gender rule}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Feasibility.}{2}{equation.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Synthetic data.}{2}{equation.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Model A: a compact MILP}{2}{section.3}\protected@file@percent }
+\newlabel{sec:modelA}{{3}{2}{Model A: a compact MILP}{section.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Decision variables.}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Objective.}{2}{section.3}\protected@file@percent }
+\newlabel{eq:objA}{{4}{2}{Objective}{equation.3.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Constraints.}{3}{equation.3.4}\protected@file@percent }
+\newlabel{eq:assign}{{5}{3}{Constraints}{equation.3.5}{}}
+\newlabel{eq:size}{{6}{3}{Constraints}{equation.3.6}{}}
+\newlabel{eq:and1}{{7}{3}{Constraints}{equation.3.7}{}}
+\newlabel{eq:and2}{{8}{3}{Constraints}{equation.3.8}{}}
+\newlabel{eq:age}{{9}{3}{Constraints}{equation.3.9}{}}
+\newlabel{eq:g1}{{11}{3}{Constraints}{equation.3.11}{}}
+\newlabel{eq:g2}{{12}{3}{Constraints}{equation.3.12}{}}
+\newlabel{eq:sym}{{13}{3}{Constraints}{equation.3.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Why Model A does not scale.}{3}{equation.3.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Model B: choose whole tables with column generation}{3}{section.4}\protected@file@percent }
+\newlabel{sec:modelB}{{4}{3}{Model B: choose whole tables with column generation}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Set partitioning reformulation.}{3}{section.4}\protected@file@percent }
+\newlabel{eq:master}{{15}{3}{Set partitioning reformulation}{equation.4.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{Column generation.}{3}{equation.4.15}\protected@file@percent }
+\newlabel{eq:redcost}{{16}{3}{Column generation}{equation.4.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{The pricing problem.}{4}{Item.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{A certified bound from weak duality.}{4}{Item.10}\protected@file@percent }
+\newlabel{eq:ub}{{17}{4}{}{equation.4.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Add-ons}{4}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:addons}{{4.1}{4}{Add-ons}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Fairness floor.}{4}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Table diversity.}{4}{equation.4.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Robustness to no-shows.}{4}{equation.4.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{4}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{4}{Results}{section.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Small instances, 5 per $N$. Model A gets a 90-second limit per instance. For $N\le 18$ it always finishes, and Model B matches its proven optimum in 8 of 10 instances. At $N=12$ both sit 15\% below the bound: tiny instances leave few gender-compatible tables, so the LP bound is loose, not the solutions. For $N\ge 24$ Model A usually hits the limit, while Model B stays within a few percent of the bound in seconds.}}{5}{table.caption.2}\protected@file@percent }
+\newlabel{tab:e1}{{1}{5}{Small instances, 5 per $N$. Model A gets a 90-second limit per instance. For $N\le 18$ it always finishes, and Model B matches its proven optimum in 8 of 10 instances. At $N=12$ both sit 15\% below the bound: tiny instances leave few gender-compatible tables, so the LP bound is loose, not the solutions. For $N\ge 24$ Model A usually hits the limit, while Model B stays within a few percent of the bound in seconds}{table.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces (a) Share of the certified upper bound achieved, averaged over 5 instances per $N$ (Random averages between $-30\%$ and $4\%$; a negative average is drawn at 0). (b) Mean solve time; Model A is stopped at 300 seconds. (c) One run of column generation at $N=30$: the restricted master LP climbs to the full LP optimum in 19 iterations using 310 of the roughly 350{,}000 possible tables, and exact pricing then certifies an upper bound.}}{5}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:qsc}{{2}{5}{(a) Share of the certified upper bound achieved, averaged over 5 instances per $N$ (Random averages between $-30\%$ and $4\%$; a negative average is drawn at 0). (b) Mean solve time; Model A is stopped at 300 seconds. (c) One run of column generation at $N=30$: the restricted master LP climbs to the full LP optimum in 19 iterations using 310 of the roughly 350{,}000 possible tables, and exact pricing then certifies an upper bound}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Quality: Model B matches the exact optimum}{5}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Scale: the compact MILP stalls, column generation does not}{5}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}What the add-ons buy}{5}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Travel.}{5}{figure.caption.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Trade-offs at $N=60$ (Model B). (a) Raising the value of time $\lambda _d$ shortens trips much faster than it lowers satisfaction, until $\lambda _d=0.32$. (b) Distribution of user value $U_i$, lower tail only: the fairness floor lifts the worst-off users from about $1.2$ to about $3$ for a 1--3\% drop in total value. (c) Share of tables that drop below four people in 5{,}000 simulated evenings, with the average table size above each bar.}}{6}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:trade}{{3}{6}{Trade-offs at $N=60$ (Model B). (a) Raising the value of time $\lambda _d$ shortens trips much faster than it lowers satisfaction, until $\lambda _d=0.32$. (b) Distribution of user value $U_i$, lower tail only: the fairness floor lifts the worst-off users from about $1.2$ to about $3$ for a 1--3\% drop in total value. (c) Share of tables that drop below four people in 5{,}000 simulated evenings, with the average table size above each bar}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Fairness.}{6}{figure.caption.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{No-shows.}{6}{figure.caption.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{6}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{6}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{What worked and why.}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Limitations.}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Next steps.}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix}{7}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Notation and parameter values}{7}{appendix.A}\protected@file@percent }
+\newlabel{app:params}{{A}{7}{Notation and parameter values}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Pricing heuristic}{7}{appendix.B}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Heuristic pricing at $(v,t)$ with weights $w_i=(1+\sigma _i)c_{ivt}-\pi _i$ and $\hat  q_{ij}=\tfrac  12(2+\sigma _i+\sigma _j)q_{ij}$}}{7}{algorithm.1}\protected@file@percent }
+\newlabel{alg:pricing}{{1}{7}{Heuristic pricing at $(v,t)$ with weights $w_i=(1+\sigma _i)c_{ivt}-\pi _i$ and $\hat q_{ij}=\tfrac 12(2+\sigma _i+\sigma _j)q_{ij}$}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Code}{7}{appendix.C}\protected@file@percent }
+\gdef \@abspage@last{7}
